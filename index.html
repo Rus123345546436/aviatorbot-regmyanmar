@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VIP Bonus Myanmar - AI Predictions</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <style>
+    .console-box {
+      font-family: monospace;
+      background-color: #1a1a1a;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 20px #00ff88;
+      color: #00ff88;
+      height: 250px;
+      overflow-y: auto;
+    }
+
+    .modal-screen {
+      font-family: monospace;
+      background: rgba(0, 0, 0, 0.9);
+      color: #00ff88;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      z-index: 50;
+      backdrop-filter: blur(5px);
+    }
+
+    .hidden-screen {
+      display: none !important;
+    }
+
+    .lang-btn {
+      transition: all 0.2s ease-in-out;
+    }
+    .lang-btn:hover {
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+
+<body class="bg-gray-900 text-white font-sans">
+
+<!-- Модальное окно выбора языка перед входом -->
+<div id="langModal" class="modal-screen">
+  <div class="bg-gray-800 p-8 rounded-2xl max-w-sm w-full mx-4 text-center border border-gray-700 shadow-2xl">
+    <h2 class="text-xl font-bold mb-6 text-white">Select Language / ဘာသာစကားကို ရွေးချယ်ပါ</h2>
+    <div class="space-y-4">
+      <button onclick="selectLanguage('my')" class="lang-btn w-full bg-amber-500 hover:bg-amber-600 text-black font-bold py-3 px-6 rounded-xl text-lg shadow-lg">
+        မြန်မာစာ (Myanmar)
+      </button>
+      <button onclick="selectLanguage('en')" class="lang-btn w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl text-lg shadow-lg">
+        English
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Экран загрузки -->
+<div id="loading" class="modal-screen hidden-screen">
+  <p id="loadingText" class="text-lg">Loading AI system...</p>
+</div>
+
+<!-- Основной контент -->
+<div id="mainContent" class="hidden-screen">
+
+<header class="w-full bg-gray-800 p-4 flex justify-between items-center border-b border-gray-700">
+
+<h1 class="text-xl font-bold text-amber-500">
+Myanmar VIP Predictor
+</h1>
+
+<nav class="space-x-4 text-sm md:text-base">
+<a href="#how" id="navHow" class="hover:text-amber-400">How It Works</a>
+<a href="#games" id="navGames" class="hover:text-amber-400">Games</a>
+<a href="#start" id="navStart" class="hover:text-amber-400">Start</a>
+</nav>
+
+</header>
+
+<section id="start" class="min-h-screen flex flex-col items-center justify-center px-4 text-center">
+
+<h2 id="heroTitle" class="text-3xl md:text-5xl font-bold mb-4">
+Earn Real Money with AI Predictions
+</h2>
+
+<!-- Карточка с промокодом -->
+<div class="bg-gray-800 border-2 border-dashed border-amber-500 rounded-xl p-4 mb-6 max-w-md w-full">
+  <p id="promoTitle" class="text-xs text-gray-400 uppercase tracking-widest mb-1">Your Promocode for Bonus</p>
+  <div class="text-3xl font-extrabold text-green-400 tracking-wider my-1">THM787</div>
+  <p id="promoSub" class="text-xs text-gray-400">Use code upon registration</p>
+</div>
+
+<p id="heroDesc" class="max-w-xl mb-8 text-gray-300">
+Thousands of players in Myanmar use our AI to win in games like Aviator, Mines, and Penalty. 98% signal accuracy, real-time predictions, and fast withdrawals.
+</p>
+
+<button id="startButton" class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-xl text-lg transition shadow-lg transform hover:scale-105">
+Start Now
+</button>
+
+<!-- Блок ошибки / регистрации -->
+<div id="errorBox" class="hidden bg-red-900 border border-red-500 p-6 rounded-xl max-w-md mx-auto mt-6">
+
+<h2 id="errTitle" class="text-xl font-bold mb-2 text-red-200">
+⚠️ Account Not Found
+</h2>
+
+<p id="errDesc" class="mb-4 text-red-100">
+Please register your account before using the platform.
+</p>
+
+<a href="https://reffpa.com/L?tag=d_5981039m_18189c_&site=5981039&ad=18189&r=registration"
+target="_blank"
+id="regBtn"
+class="inline-block bg-amber-400 hover:bg-amber-500 text-black font-bold py-3 px-6 rounded-lg transition shadow-md">
+Create Account
+</a>
+
+</div>
+
+</section>
+
+<!-- Блок статистики выигрышей -->
+<section class="bg-gray-800 py-12 px-6 text-center border-t border-b border-gray-700">
+
+<h3 id="statHeader" class="text-2xl font-bold text-amber-500 mb-6">
+Live Winnings (MMK)
+</h3>
+
+<div id="statsGrid" class="grid md:grid-cols-2 gap-4 text-left max-w-4xl mx-auto text-sm text-green-300 font-mono">
+  <!-- Заполняется динамически -->
+</div>
+
+</section>
+
+<section id="games" class="bg-gray-800 py-12 px-6 text-center">
+
+<h3 id="gamesHeader" class="text-2xl font-bold text-amber-500 mb-6">
+Compatible Games
+</h3>
+
+<div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+<div class="bg-gray-700 p-6 rounded-xl shadow-lg border border-gray-600">
+
+<h4 class="text-xl font-bold mb-2 text-white">
+🎮 Aviator
+</h4>
+
+<p id="gameAviatorDesc" class="text-gray-300">
+Analyze previous rounds and receive live AI-powered statistics for Aviator.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<section id="how" class="bg-gray-900 py-12 px-6 text-center">
+
+<h3 id="howHeader" class="text-2xl font-bold text-amber-500 mb-6">
+How It Works
+</h3>
+
+<div class="max-w-3xl mx-auto space-y-4 text-gray-300 text-left md:text-center">
+
+<p id="how1">📡 The AI continuously analyzes Aviator game data.</p>
+
+<p id="how2">💡 It detects patterns and provides real-time analysis.</p>
+
+<p id="how3">📲 Results are displayed instantly in a simple interface.</p>
+
+<p id="how4">⚡ Fast, lightweight and optimized for mobile devices.</p>
+
+</div>
+
+</section>
+
+<section class="bg-black py-12 px-6 text-center">
+
+<h3 class="text-xl font-bold text-green-400 mb-4">
+Console Log
+</h3>
+
+<div class="console-box max-w-3xl mx-auto text-left" id="console">
+
+<p>[INFO] AI analysis engine started ✅</p>
+
+<p id="consoleLoc">[OK] Myanmar localization loaded</p>
+
+<p>[OK] Currency set to MMK</p>
+
+<p>[OK] Aviator module initialized</p>
+
+<p>[INFO] Live data synchronization...</p>
+
+<p>[SUCCESS] Analysis completed</p>
+
+</div>
+
+</section>
+
+<footer class="text-center text-gray-500 text-sm py-6">
+
+© 2026 VIP AI Game Analysis Myanmar
+
+</footer>
+
+</div>
+
+<script>
+// Переводы интерфейса
+const translations = {
+  my: {
+    loading: "AI စနစ်ကို ရယူနေသည်...",
+    navHow: "အလုပ်လုပ်ပုံ",
+    navGames: "ဂိမ်းများ",
+    navStart: "စတင်ရန်",
+    heroTitle: "AI ခန့်မှန်းချက်များဖြင့် ငွေအစစ်အမှန် ရှာဖွေပါ",
+    promoTitle: "ဘောနပ်စ်ရယူရန် ပရိုမိုကုဒ်",
+    promoSub: "အကောင့်ဖွင့်စဉ် ဤကုဒ်ကို အသုံးပြုပါ",
+    heroDesc: "မြန်မာနိုင်ငံမှ ကစားသမားထောင်ပေါင်းများစွာသည် Aviator, Mines နှင့် Penalty တို့တွင် အနိုင်ရရန် ကျွန်ုပ်တို့၏ AI ကို အသုံးပြုကြသည်။ ၉၈% တိကျမှု၊ တိုက်ရိုက်ခန့်မှန်းချက်များနှင့် လျှင်မြန်သော ငွေထုတ်ယူမှုများ။",
+    startBtn: "ယခုစတင်ပါ",
+    errTitle: "⚠️ အကောင့် ရှာမတွေ့ပါ",
+    errDesc: "စနစ်ကို မအသုံးပြုမီ ကျေးဇူးပြု၍ အကောင့်သစ် ဖွင့်လှစ်ပါ။",
+    regBtn: "အကောင့်သစ်ဖွင့်ရန်",
+    statHeader: "လတ်တလော အနိုင်ရရှိမှုများ (MMK)",
+    gamesHeader: "ကစားနိုင်သော ဂိမ်းများ",
+    gameAviatorDesc: "ယခင်ပွဲစဉ်များကို ပိုင်းခြားစိတ်ဖြာပြီး Aviator အတွက် တိုက်ရိုက် AI ကိန်းဂဏန်းများကို ရယူပါ။",
+    howHeader: "အလုပ်လုပ်ပုံ",
+    how1: "📡 AI သည် Aviator ဂိမ်းဒေတာများကို စဉ်ဆက်မပြတ် ပိုင်းခြားစိတ်ဖြာနေသည်။",
+    how2: "💡 ၎င်းသည် ပုံစံများကို ရှာဖွေတွေ့ရှိပြီး တိုက်ရိုက် သုံးသပ်ချက်များကို ပေးဆောင်သည်။",
+    how3: "📲 ရလဒ်များကို ရိုးရှင်းသော အင်တာဖေ့စ်တွင် ချက်ချင်း ပြသပေးသည်။",
+    how4: "⚡ ဖုန်းများအတွက် သီးသန့် မြန်ဆန်ပေါ့ပါးစွာ ပြုလုပ်ထားသည်။",
+    consoleLoc: "[OK] မြန်မာဘာသာစကား သတ်မှတ်ပြီးပါပြီ"
+  },
+  en: {
+    loading: "Loading AI system...",
+    navHow: "How It Works",
+    navGames: "Games",
+    navStart: "Start",
+    heroTitle: "Earn Real Money with AI Predictions",
+    promoTitle: "Your Promocode for Bonus",
+    promoSub: "Use code upon registration",
+    heroDesc: "Thousands of players in Myanmar use our AI to win in games like Aviator, Mines, and Penalty. 98% signal accuracy, real-time predictions, and fast withdrawals.",
+    startBtn: "Start Now",
+    errTitle: "⚠️ Account Not Found",
+    errDesc: "Please register your account before using the platform.",
+    regBtn: "Create Account",
+    statHeader: "Live Winnings (MMK)",
+    gamesHeader: "Compatible Games",
+    gameAviatorDesc: "Analyze previous rounds and receive live AI-powered statistics for Aviator.",
+    howHeader: "How It Works",
+    how1: "📡 The AI continuously analyzes Aviator game data.",
+    how2: "💡 It detects patterns and provides real-time analysis.",
+    how3: "📲 Results are displayed instantly in a simple interface.",
+    how4: "⚡ Fast, lightweight and optimized for mobile devices.",
+    consoleLoc: "[OK] Myanmar localization loaded"
+  }
+};
+
+let currentLang = 'my';
+
+function selectLanguage(lang) {
+  currentLang = lang;
+  
+  // Закрываем окно выбора языка и показываем экран загрузки
+  document.getElementById("langModal").classList.add("hidden-screen");
+  document.getElementById("loadingText").innerText = translations[lang].loading;
+  document.getElementById("loading").classList.remove("hidden-screen");
+
+  // Применяем тексты
+  applyTranslations(lang);
+  
+  // Генерация выигрышей (200k - 300k MMK)
+  generateStats();
+
+  // Задержка загрузки
+  setTimeout(() => {
+    document.getElementById("loading").classList.add("hidden-screen");
+    document.getElementById("mainContent").classList.remove("hidden-screen");
+  }, 2500);
+}
+
+function applyTranslations(lang) {
+  const t = translations[lang];
+  document.getElementById("navHow").innerText = t.navHow;
+  document.getElementById("navGames").innerText = t.navGames;
+  document.getElementById("navStart").innerText = t.navStart;
+  document.getElementById("heroTitle").innerText = t.heroTitle;
+  document.getElementById("promoTitle").innerText = t.promoTitle;
+  document.getElementById("promoSub").innerText = t.promoSub;
+  document.getElementById("heroDesc").innerText = t.heroDesc;
+  document.getElementById("startButton").innerText = t.startBtn;
+  document.getElementById("errTitle").innerText = t.errTitle;
+  document.getElementById("errDesc").innerText = t.errDesc;
+  document.getElementById("regBtn").innerText = t.regBtn;
+  document.getElementById("statHeader").innerText = t.statHeader;
+  document.getElementById("gamesHeader").innerText = t.gamesHeader;
+  document.getElementById("gameAviatorDesc").innerText = t.gameAviatorDesc;
+  document.getElementById("howHeader").innerText = t.howHeader;
+  document.getElementById("how1").innerText = t.how1;
+  document.getElementById("how2").innerText = t.how2;
+  document.getElementById("how3").innerText = t.how3;
+  document.getElementById("how4").innerText = t.how4;
+  document.getElementById("consoleLoc").innerText = t.consoleLoc;
+}
+
+// Генератор сумм выигрыша в диапазоне 200,000 - 300,000 MMK
+function generateStats() {
+  const grid = document.getElementById("statsGrid");
+  grid.innerHTML = "";
+  
+  const phonePrefixes = ['0945', '0925', '0979', '0997', '0969', '0926', '0942', '0978', '0995', '0988'];
+
+  for (let i = 0; i < 10; i++) {
+    const prefix = phonePrefixes[Math.floor(Math.random() * phonePrefixes.length)];
+    const randomSuffix = Math.floor(100 + Math.random() * 900); // 3 случайные цифры
+    
+    // Сумма от 200,000 до 300,000 MMK с округлением до сотен
+    const min = 200000;
+    const max = 300000;
+    const amount = Math.floor((Math.random() * (max - min) + min) / 500) * 500;
+    
+    const formattedAmount = amount.toLocaleString('en-US') + ' MMK';
+
+    const p = document.createElement("p");
+    p.innerText = `👤 User ID: ${prefix}***${randomSuffix} — ${formattedAmount}`;
+    grid.appendChild(p);
+  }
+}
+
+document.getElementById("startButton").addEventListener("click", () => {
+  document.getElementById("errorBox").classList.remove("hidden");
+});
+</script>
+
+</body>
+</html>
